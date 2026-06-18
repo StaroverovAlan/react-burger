@@ -7,32 +7,31 @@ import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredi
 import { IngredientDetails } from '@components/ingredient-details/ingredient-details';
 import { Modal } from '@components/modal/modal';
 import { OrderDetails } from '@components/order-details/order-details';
-import { getIngredientsApi } from '@utils/api';
+import { useAppDispatch, useAppSelector } from '@services/hooks';
+import { fetchIngredients } from '@services/ingredients/actions';
+import {
+  getIngredients,
+  getIngredientsError,
+  getIngredientsLoading,
+} from '@services/ingredients/slice';
 
 import type { TIngredient } from '@utils/types';
 
 import styles from './app.module.css';
 
 export const App = (): React.JSX.Element => {
-  const [ingredients, setIngredients] = useState<TIngredient[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const ingredients = useAppSelector(getIngredients);
+  const isLoading = useAppSelector(getIngredientsLoading);
+  const error = useAppSelector(getIngredientsError);
 
   const [selectedIngredient, setSelectedIngredient] = useState<TIngredient | null>(null);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
   useEffect(() => {
-    getIngredientsApi()
-      .then((response) => {
-        setIngredients(response.data);
-      })
-      .catch(() => {
-        setHasError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
+    void dispatch(fetchIngredients());
+  }, [dispatch]);
 
   const handleIngredientClick = useCallback((ingredient: TIngredient) => {
     setSelectedIngredient(ingredient);
@@ -60,13 +59,13 @@ export const App = (): React.JSX.Element => {
 
       {isLoading && <Preloader />}
 
-      {hasError && (
+      {error && (
         <p className="text text_type_main-medium text_color_inactive pl-5">
           Не удалось загрузить ингредиенты
         </p>
       )}
 
-      {!isLoading && !hasError && (
+      {!isLoading && !error && (
         <main className={`${styles.main} pl-5 pr-5`}>
           <BurgerIngredients
             ingredients={ingredients}
