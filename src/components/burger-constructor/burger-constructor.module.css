@@ -5,3 +5,38 @@
   padding-bottom: 20px;
   color: var(--text-primary-color);
 }
+
+.locked_element {
+  display: flex;
+  align-items: center;
+}
+
+.constructor_list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: calc(100vh - 420px);
+  margin: 16px 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style-type: none;
+}
+
+.constructor_item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.order {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 40px;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

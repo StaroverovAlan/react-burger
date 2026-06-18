@@ -79,7 +79,7 @@
   },
   "lint-staged": {
     "./src/**/*.css": [
-      "stylelint --fix",
+      "stylelint --fix --config ./stylelint.config.ts",
       "prettier --write"
     ],
     "./src/**/*.{js,jsx,ts,tsx}": [
