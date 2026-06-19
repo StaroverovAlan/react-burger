@@ -22,12 +22,6 @@
   list-style-type: none;
 }
 
-.constructor_item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .order {
   display: flex;
   justify-content: flex-end;
@@ -60,4 +54,9 @@
 
 .placeholder_bottom {
   border-radius: 40px 40px 88px 88px;
+}
+
+.constructor_hover {
+  outline: 1px dashed #4c4cff;
+  outline-offset: 8px;
 }

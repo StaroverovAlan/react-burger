@@ -2,12 +2,21 @@ import {
   Button,
   ConstructorElement,
   CurrencyIcon,
-  DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
+import { useRef } from 'react';
+import { useDrop } from 'react-dnd';
 
-import { useAppSelector } from '@services/hooks';
+import { ConstructorIngredient } from '@components/constructor-ingredient/constructor-ingredient';
+import {
+  addIngredient,
+  getConstructorBun,
+  getConstructorIngredients,
+  getTotalPrice,
+} from '@services/burger-constructor/slice';
+import { useAppDispatch, useAppSelector } from '@services/hooks';
+import { DND_TYPES } from '@utils/constants';
 
-import type { TConstructorIngredient, TIngredient } from '@utils/types';
+import type { TIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
 
@@ -18,27 +27,31 @@ type TBurgerConstructorProps = {
 export const BurgerConstructor = ({
   onOrderClick,
 }: TBurgerConstructorProps): React.JSX.Element => {
-  const bun = useAppSelector((state): TIngredient | null => state.burgerConstructor.bun);
+  const dispatch = useAppDispatch();
 
-  const constructorIngredients = useAppSelector(
-    (state): TConstructorIngredient[] => state.burgerConstructor.ingredients
-  );
+  const constructorRef = useRef<HTMLElement | null>(null);
 
-  const totalPrice = useAppSelector((state): number => {
-    const bunPrice = state.burgerConstructor.bun
-      ? state.burgerConstructor.bun.price * 2
-      : 0;
+  const bun = useAppSelector(getConstructorBun);
+  const constructorIngredients = useAppSelector(getConstructorIngredients);
+  const totalPrice = useAppSelector(getTotalPrice);
 
-    const ingredientsPrice = state.burgerConstructor.ingredients.reduce(
-      (sum, ingredient) => sum + ingredient.price,
-      0
-    );
-
-    return bunPrice + ingredientsPrice;
+  const [{ isOver }, dropRef] = useDrop<TIngredient, void, { isOver: boolean }>({
+    accept: DND_TYPES.ingredient,
+    drop: (ingredient) => {
+      dispatch(addIngredient(ingredient));
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
   });
 
+  dropRef(constructorRef);
+
   return (
-    <section className={styles.burger_constructor}>
+    <section
+      ref={constructorRef}
+      className={`${styles.burger_constructor} ${isOver ? styles.constructor_hover : ''}`}
+    >
       <div className={`${styles.locked_element} ml-8`}>
         {bun ? (
           <ConstructorElement
@@ -57,15 +70,12 @@ export const BurgerConstructor = ({
 
       <ul className={`${styles.constructor_list} custom-scroll`}>
         {constructorIngredients.length > 0 ? (
-          constructorIngredients.map((ingredient) => (
-            <li className={styles.constructor_item} key={ingredient.uniqueId}>
-              <DragIcon type="primary" />
-              <ConstructorElement
-                text={ingredient.name}
-                price={ingredient.price}
-                thumbnail={ingredient.image}
-              />
-            </li>
+          constructorIngredients.map((ingredient, index) => (
+            <ConstructorIngredient
+              key={ingredient.uniqueId}
+              ingredient={ingredient}
+              index={index}
+            />
           ))
         ) : (
           <li className={`${styles.placeholder} ml-8`}>

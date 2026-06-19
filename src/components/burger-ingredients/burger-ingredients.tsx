@@ -2,6 +2,8 @@ import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { IngredientCard } from '@components/ingredient-card/ingredient-card';
+import { getIngredientCounters } from '@services/burger-constructor/slice';
+import { useAppSelector } from '@services/hooks';
 
 import type { TIngredient, TIngredientType } from '@utils/types';
 
@@ -16,6 +18,7 @@ export const BurgerIngredients = ({
   ingredients,
   onIngredientClick,
 }: TBurgerIngredientsProps): React.JSX.Element => {
+  const counters = useAppSelector(getIngredientCounters);
   const [currentTab, setCurrentTab] = useState<TIngredientType>('bun');
 
   const bunsRef = useRef<HTMLElement | null>(null);
@@ -118,7 +121,7 @@ export const BurgerIngredients = ({
               <IngredientCard
                 key={ingredient._id}
                 ingredient={ingredient}
-                count={ingredient._id === buns[0]?._id ? 1 : 0}
+                count={counters[ingredient._id] ?? 0}
                 onClick={onIngredientClick}
               />
             ))}
@@ -132,6 +135,7 @@ export const BurgerIngredients = ({
               <IngredientCard
                 key={ingredient._id}
                 ingredient={ingredient}
+                count={counters[ingredient._id] ?? 0}
                 onClick={onIngredientClick}
               />
             ))}
@@ -145,6 +149,7 @@ export const BurgerIngredients = ({
               <IngredientCard
                 key={ingredient._id}
                 ingredient={ingredient}
+                count={counters[ingredient._id] ?? 0}
                 onClick={onIngredientClick}
               />
             ))}
