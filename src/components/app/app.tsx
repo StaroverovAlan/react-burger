@@ -1,5 +1,5 @@
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
@@ -7,6 +7,10 @@ import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredi
 import { IngredientDetails } from '@components/ingredient-details/ingredient-details';
 import { Modal } from '@components/modal/modal';
 import { OrderDetails } from '@components/order-details/order-details';
+import {
+  clearConstructor,
+  getOrderIngredientIds,
+} from '@services/burger-constructor/slice';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 import {
   clearSelectedIngredient,
@@ -19,6 +23,8 @@ import {
   getIngredientsError,
   getIngredientsLoading,
 } from '@services/ingredients/slice';
+import { createOrder } from '@services/order/actions';
+import { clearOrder, getOrderLoading, getOrderNumber } from '@services/order/slice';
 
 import type { TIngredient } from '@utils/types';
 
@@ -27,12 +33,15 @@ import styles from './app.module.css';
 export const App = (): React.JSX.Element => {
   const dispatch = useAppDispatch();
 
+  const orderIngredientIds = useAppSelector(getOrderIngredientIds);
+  const orderNumber = useAppSelector(getOrderNumber);
+  const isOrderLoading = useAppSelector(getOrderLoading);
+
   const ingredients = useAppSelector(getIngredients);
   const isLoading = useAppSelector(getIngredientsLoading);
   const error = useAppSelector(getIngredientsError);
 
   const selectedIngredient = useAppSelector(getSelectedIngredient);
-  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
   useEffect(() => {
     void dispatch(fetchIngredients());
@@ -46,16 +55,21 @@ export const App = (): React.JSX.Element => {
   );
 
   const handleOrderClick = useCallback(() => {
-    setIsOrderModalOpen(true);
-  }, []);
+    if (orderIngredientIds.length === 0) {
+      return;
+    }
+
+    void dispatch(createOrder(orderIngredientIds));
+  }, [dispatch, orderIngredientIds]);
 
   const handleCloseIngredientModal = useCallback(() => {
     dispatch(clearSelectedIngredient());
   }, [dispatch]);
 
   const handleCloseOrderModal = useCallback(() => {
-    setIsOrderModalOpen(false);
-  }, []);
+    dispatch(clearOrder());
+    dispatch(clearConstructor());
+  }, [dispatch]);
 
   return (
     <div className={styles.app}>
@@ -79,7 +93,10 @@ export const App = (): React.JSX.Element => {
             ingredients={ingredients}
             onIngredientClick={handleIngredientClick}
           />
-          <BurgerConstructor onOrderClick={handleOrderClick} />
+          <BurgerConstructor
+            onOrderClick={handleOrderClick}
+            isOrderLoading={isOrderLoading}
+          />
         </main>
       )}
 
@@ -89,7 +106,7 @@ export const App = (): React.JSX.Element => {
         </Modal>
       )}
 
-      {isOrderModalOpen && (
+      {orderNumber && (
         <Modal onClose={handleCloseOrderModal}>
           <OrderDetails />
         </Modal>

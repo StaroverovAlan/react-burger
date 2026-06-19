@@ -1,14 +1,17 @@
 import { CheckMarkIcon } from '@krgaa/react-developer-burger-ui-components';
 
+import { useAppSelector } from '@services/hooks';
+import { getOrderNumber } from '@services/order/slice';
+
 import styles from './order-details.module.css';
 
-const TEST_ORDER_NUMBER = '034536';
-
 export const OrderDetails = (): React.JSX.Element => {
+  const orderNumber = useAppSelector(getOrderNumber);
+
   return (
     <section className={styles.details}>
       <p className={`${styles.order_number} text text_type_digits-large mt-4 mb-8`}>
-        {TEST_ORDER_NUMBER}
+        {orderNumber}
       </p>
 
       <p className="text text_type_main-medium mt-0 mb-15">идентификатор заказа</p>

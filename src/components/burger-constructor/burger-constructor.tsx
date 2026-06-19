@@ -22,10 +22,12 @@ import styles from './burger-constructor.module.css';
 
 type TBurgerConstructorProps = {
   onOrderClick: () => void;
+  isOrderLoading: boolean;
 };
 
 export const BurgerConstructor = ({
   onOrderClick,
+  isOrderLoading,
 }: TBurgerConstructorProps): React.JSX.Element => {
   const dispatch = useAppDispatch();
 
@@ -106,7 +108,13 @@ export const BurgerConstructor = ({
           <CurrencyIcon type="primary" />
         </div>
 
-        <Button htmlType="button" type="primary" size="large" onClick={onOrderClick}>
+        <Button
+          htmlType="button"
+          type="primary"
+          size="large"
+          onClick={onOrderClick}
+          disabled={!bun || isOrderLoading}
+        >
           Оформить заказ
         </Button>
       </div>
