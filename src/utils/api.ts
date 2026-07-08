@@ -1,6 +1,6 @@
 import { API_URL } from './constants';
 
-import type { TIngredientsResponse } from './types';
+import type { TIngredientsResponse, TOrderResponse } from './types';
 
 const checkResponse = <T>(response: Response): Promise<T> => {
   if (response.ok) {
@@ -21,5 +21,17 @@ const checkSuccess = <T extends { success: boolean }>(data: T): T => {
 export const getIngredientsApi = (): Promise<TIngredientsResponse> => {
   return fetch(`${API_URL}/ingredients`)
     .then(checkResponse<TIngredientsResponse>)
+    .then(checkSuccess);
+};
+
+export const createOrderApi = (ingredients: string[]): Promise<TOrderResponse> => {
+  return fetch(`${API_URL}/orders`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ingredients }),
+  })
+    .then(checkResponse<TOrderResponse>)
     .then(checkSuccess);
 };

@@ -2,6 +2,8 @@ import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { IngredientCard } from '@components/ingredient-card/ingredient-card';
+import { getIngredientCounters } from '@services/burger-constructor/slice';
+import { useAppSelector } from '@services/hooks';
 
 import type { TIngredient, TIngredientType } from '@utils/types';
 
@@ -16,11 +18,47 @@ export const BurgerIngredients = ({
   ingredients,
   onIngredientClick,
 }: TBurgerIngredientsProps): React.JSX.Element => {
+  const counters = useAppSelector(getIngredientCounters);
   const [currentTab, setCurrentTab] = useState<TIngredientType>('bun');
 
   const bunsRef = useRef<HTMLElement | null>(null);
   const saucesRef = useRef<HTMLElement | null>(null);
   const mainsRef = useRef<HTMLElement | null>(null);
+  const ingredientsListRef = useRef<HTMLDivElement | null>(null);
+
+  const handleScroll = useCallback(() => {
+    if (
+      !ingredientsListRef.current ||
+      !bunsRef.current ||
+      !saucesRef.current ||
+      !mainsRef.current
+    ) {
+      return;
+    }
+
+    const containerTop = ingredientsListRef.current.getBoundingClientRect().top;
+
+    const sectionPositions = [
+      {
+        value: 'bun',
+        distance: Math.abs(bunsRef.current.getBoundingClientRect().top - containerTop),
+      },
+      {
+        value: 'sauce',
+        distance: Math.abs(saucesRef.current.getBoundingClientRect().top - containerTop),
+      },
+      {
+        value: 'main',
+        distance: Math.abs(mainsRef.current.getBoundingClientRect().top - containerTop),
+      },
+    ] as const;
+
+    const closestSection = sectionPositions.reduce((previous, current) =>
+      current.distance < previous.distance ? current : previous
+    );
+
+    setCurrentTab(closestSection.value);
+  }, []);
 
   const buns = useMemo(
     () => ingredients.filter((ingredient) => ingredient.type === 'bun'),
@@ -71,7 +109,11 @@ export const BurgerIngredients = ({
         </ul>
       </nav>
 
-      <div className={`${styles.ingredients_list} custom-scroll`}>
+      <div
+        ref={ingredientsListRef}
+        className={`${styles.ingredients_list} custom-scroll`}
+        onScroll={handleScroll}
+      >
         <section ref={bunsRef}>
           <h2 className="text text_type_main-medium mt-10 mb-6">Булки</h2>
           <ul className={styles.cards}>
@@ -79,7 +121,7 @@ export const BurgerIngredients = ({
               <IngredientCard
                 key={ingredient._id}
                 ingredient={ingredient}
-                count={ingredient._id === buns[0]?._id ? 1 : 0}
+                count={counters[ingredient._id] ?? 0}
                 onClick={onIngredientClick}
               />
             ))}
@@ -93,6 +135,7 @@ export const BurgerIngredients = ({
               <IngredientCard
                 key={ingredient._id}
                 ingredient={ingredient}
+                count={counters[ingredient._id] ?? 0}
                 onClick={onIngredientClick}
               />
             ))}
@@ -106,6 +149,7 @@ export const BurgerIngredients = ({
               <IngredientCard
                 key={ingredient._id}
                 ingredient={ingredient}
+                count={counters[ingredient._id] ?? 0}
                 onClick={onIngredientClick}
               />
             ))}

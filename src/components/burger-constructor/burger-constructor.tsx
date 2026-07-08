@@ -2,47 +2,60 @@ import {
   Button,
   ConstructorElement,
   CurrencyIcon,
-  DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useMemo } from 'react';
+import { useRef } from 'react';
+import { useDrop } from 'react-dnd';
+
+import { ConstructorIngredient } from '@components/constructor-ingredient/constructor-ingredient';
+import {
+  addIngredient,
+  getConstructorBun,
+  getConstructorIngredients,
+  getTotalPrice,
+} from '@services/burger-constructor/slice';
+import { useAppDispatch, useAppSelector } from '@services/hooks';
+import { DND_TYPES } from '@utils/constants';
 
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
 
 type TBurgerConstructorProps = {
-  ingredients: TIngredient[];
   onOrderClick: () => void;
+  isOrderLoading: boolean;
 };
 
 export const BurgerConstructor = ({
-  ingredients,
   onOrderClick,
+  isOrderLoading,
 }: TBurgerConstructorProps): React.JSX.Element => {
-  const bun = useMemo(
-    () => ingredients.find((ingredient) => ingredient.type === 'bun'),
-    [ingredients]
-  );
+  const dispatch = useAppDispatch();
 
-  const fillingIngredients = useMemo(
-    () => ingredients.filter((ingredient) => ingredient.type !== 'bun').slice(0, 8),
-    [ingredients]
-  );
+  const constructorRef = useRef<HTMLElement | null>(null);
 
-  const totalPrice = useMemo(() => {
-    const bunPrice = bun ? bun.price * 2 : 0;
-    const fillingPrice = fillingIngredients.reduce(
-      (sum, ingredient) => sum + ingredient.price,
-      0
-    );
+  const bun = useAppSelector(getConstructorBun);
+  const constructorIngredients = useAppSelector(getConstructorIngredients);
+  const totalPrice = useAppSelector(getTotalPrice);
 
-    return bunPrice + fillingPrice;
-  }, [bun, fillingIngredients]);
+  const [{ isOver }, dropRef] = useDrop<TIngredient, void, { isOver: boolean }>({
+    accept: DND_TYPES.ingredient,
+    drop: (ingredient) => {
+      dispatch(addIngredient(ingredient));
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  dropRef(constructorRef);
 
   return (
-    <section className={styles.burger_constructor}>
-      {bun && (
-        <div className={`${styles.locked_element} ml-8`}>
+    <section
+      ref={constructorRef}
+      className={`${styles.burger_constructor} ${isOver ? styles.constructor_hover : ''}`}
+    >
+      <div className={`${styles.locked_element} ml-8`}>
+        {bun ? (
           <ConstructorElement
             type="top"
             isLocked={true}
@@ -50,24 +63,31 @@ export const BurgerConstructor = ({
             price={bun.price}
             thumbnail={bun.image}
           />
-        </div>
-      )}
+        ) : (
+          <div className={`${styles.placeholder} ${styles.placeholder_top}`}>
+            <span className="text text_type_main-default">Выберите булки</span>
+          </div>
+        )}
+      </div>
 
       <ul className={`${styles.constructor_list} custom-scroll`}>
-        {fillingIngredients.map((ingredient, index) => (
-          <li className={styles.constructor_item} key={`${ingredient._id}-${index}`}>
-            <DragIcon type="primary" />
-            <ConstructorElement
-              text={ingredient.name}
-              price={ingredient.price}
-              thumbnail={ingredient.image}
+        {constructorIngredients.length > 0 ? (
+          constructorIngredients.map((ingredient, index) => (
+            <ConstructorIngredient
+              key={ingredient.uniqueId}
+              ingredient={ingredient}
+              index={index}
             />
+          ))
+        ) : (
+          <li className={`${styles.placeholder} ml-8`}>
+            <span className="text text_type_main-default">Выберите начинку</span>
           </li>
-        ))}
+        )}
       </ul>
 
-      {bun && (
-        <div className={`${styles.locked_element} ml-8`}>
+      <div className={`${styles.locked_element} ml-8`}>
+        {bun ? (
           <ConstructorElement
             type="bottom"
             isLocked={true}
@@ -75,8 +95,12 @@ export const BurgerConstructor = ({
             price={bun.price}
             thumbnail={bun.image}
           />
-        </div>
-      )}
+        ) : (
+          <div className={`${styles.placeholder} ${styles.placeholder_bottom}`}>
+            <span className="text text_type_main-default">Выберите булки</span>
+          </div>
+        )}
+      </div>
 
       <div className={`${styles.order} mt-10`}>
         <div className={styles.price}>
@@ -84,7 +108,13 @@ export const BurgerConstructor = ({
           <CurrencyIcon type="primary" />
         </div>
 
-        <Button htmlType="button" type="primary" size="large" onClick={onOrderClick}>
+        <Button
+          htmlType="button"
+          type="primary"
+          size="large"
+          onClick={onOrderClick}
+          disabled={!bun || isOrderLoading}
+        >
           Оформить заказ
         </Button>
       </div>
