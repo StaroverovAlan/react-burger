@@ -4,21 +4,22 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { IngredientCard } from '@components/ingredient-card/ingredient-card';
 import { getIngredientCounters } from '@services/burger-constructor/slice';
 import { useAppSelector } from '@services/hooks';
+import { getIngredients } from '@services/ingredients/slice';
 
 import type { TIngredient, TIngredientType } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
 
 type TBurgerIngredientsProps = {
-  ingredients: TIngredient[];
   onIngredientClick: (ingredient: TIngredient) => void;
 };
 
 export const BurgerIngredients = ({
-  ingredients,
   onIngredientClick,
 }: TBurgerIngredientsProps): React.JSX.Element => {
+  const ingredients = useAppSelector(getIngredients);
   const counters = useAppSelector(getIngredientCounters);
+
   const [currentTab, setCurrentTab] = useState<TIngredientType>('bun');
 
   const bunsRef = useRef<HTMLElement | null>(null);
