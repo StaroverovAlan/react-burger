@@ -18,20 +18,25 @@ const checkSuccess = <T extends { success: boolean }>(data: T): T => {
   throw new Error('Ответ API содержит success: false');
 };
 
-export const getIngredientsApi = (): Promise<TIngredientsResponse> => {
-  return fetch(`${API_URL}/ingredients`)
-    .then(checkResponse<TIngredientsResponse>)
+const request = <T extends { success: boolean }>(
+  endpoint: string,
+  options?: RequestInit
+): Promise<T> => {
+  return fetch(`${API_URL}${endpoint}`, options)
+    .then(checkResponse<T>)
     .then(checkSuccess);
 };
 
+export const getIngredientsApi = (): Promise<TIngredientsResponse> => {
+  return request<TIngredientsResponse>('/ingredients');
+};
+
 export const createOrderApi = (ingredients: string[]): Promise<TOrderResponse> => {
-  return fetch(`${API_URL}/orders`, {
+  return request<TOrderResponse>('/orders', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ ingredients }),
-  })
-    .then(checkResponse<TOrderResponse>)
-    .then(checkSuccess);
+  });
 };

@@ -18,11 +18,7 @@ import {
   setSelectedIngredient,
 } from '@services/ingredient-details/slice';
 import { fetchIngredients } from '@services/ingredients/actions';
-import {
-  getIngredients,
-  getIngredientsError,
-  getIngredientsLoading,
-} from '@services/ingredients/slice';
+import { getIngredientsError, getIngredientsLoading } from '@services/ingredients/slice';
 import { createOrder } from '@services/order/actions';
 import { clearOrder, getOrderLoading, getOrderNumber } from '@services/order/slice';
 
@@ -37,7 +33,6 @@ export const App = (): React.JSX.Element => {
   const orderNumber = useAppSelector(getOrderNumber);
   const isOrderLoading = useAppSelector(getOrderLoading);
 
-  const ingredients = useAppSelector(getIngredients);
   const isLoading = useAppSelector(getIngredientsLoading);
   const error = useAppSelector(getIngredientsError);
 
@@ -89,10 +84,7 @@ export const App = (): React.JSX.Element => {
 
       {!isLoading && !error && (
         <main className={`${styles.main} pl-5 pr-5`}>
-          <BurgerIngredients
-            ingredients={ingredients}
-            onIngredientClick={handleIngredientClick}
-          />
+          <BurgerIngredients onIngredientClick={handleIngredientClick} />
           <BurgerConstructor
             onOrderClick={handleOrderClick}
             isOrderLoading={isOrderLoading}
