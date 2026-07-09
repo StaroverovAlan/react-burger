@@ -1,0 +1,54 @@
+.page {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 60px;
+  width: 860px;
+  margin: 120px auto 0;
+  color: var(--text-primary-color);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  color: var(--text-inactive-color);
+  text-decoration: none;
+}
+
+.link_active {
+  color: var(--text-primary-color);
+}
+
+.button {
+  min-height: 64px;
+  padding: 0;
+  color: var(--text-inactive-color);
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.hint {
+  margin-top: 80px;
+  opacity: 0.4;
+}
+
+.content {
+  min-width: 480px;
+}

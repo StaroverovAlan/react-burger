@@ -26,6 +26,7 @@
     "@krgaa/react-developer-burger-ui-components": "^1.0.1",
     "@reduxjs/toolkit": "^2.9.0",
     "core-js": "^3.45.1",
+    "js-cookie": "^3.0.8",
     "lodash-es": "^4.17.21",
     "react": "^19.1.1",
     "react-dnd": "^16.0.1",
@@ -40,6 +41,7 @@
     "@testing-library/jest-dom": "^6.9.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/js-cookie": "^3.0.6",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.3",
@@ -79,7 +81,7 @@
   },
   "lint-staged": {
     "./src/**/*.css": [
-      "stylelint --fix --config ./stylelint.config.ts",
+      "stylelint --fix --config ./stylelint.config.js",
       "prettier --write"
     ],
     "./src/**/*.{js,jsx,ts,tsx}": [
@@ -94,3 +96,4 @@
     }
   }
 }
+

@@ -15,6 +15,10 @@
   flex-basis: 35%;
 }
 
+.link_wrapper {
+  text-decoration: none;
+}
+
 .link {
   display: flex;
   color: var(--text-inactive-color);
