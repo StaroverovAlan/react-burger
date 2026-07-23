@@ -4,14 +4,15 @@ import {
   Input,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { registerUser } from '@services/auth/actions';
 import { getAuthError, getAuthLoading } from '@services/auth/slice';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 
-import type { ChangeEvent, FormEvent } from 'react';
+import { useForm } from '../../hooks/use-form';
+
+import type { FormEvent } from 'react';
 
 import styles from '../auth-form.module.css';
 
@@ -20,26 +21,16 @@ export const RegisterPage = (): React.JSX.Element => {
   const isLoading = useAppSelector(getAuthLoading);
   const error = useAppSelector(getAuthError);
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleNameChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setName(event.target.value);
-  };
-
-  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setPassword(event.target.value);
-  };
+  const { values, handleChange } = useForm({
+    name: '',
+    email: '',
+    password: '',
+  });
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    void dispatch(registerUser({ name, email, password }));
+    void dispatch(registerUser(values));
   };
 
   return (
@@ -49,27 +40,27 @@ export const RegisterPage = (): React.JSX.Element => {
 
         <Input
           name="name"
-          value={name}
+          value={values.name}
           placeholder="Имя"
-          onChange={handleNameChange}
+          onChange={handleChange}
           extraClass="mb-6"
           required
         />
 
         <EmailInput
           name="email"
-          value={email}
+          value={values.email}
           placeholder="E-mail"
-          onChange={handleEmailChange}
+          onChange={handleChange}
           extraClass="mb-6"
           required
         />
 
         <PasswordInput
           name="password"
-          value={password}
+          value={values.password}
           placeholder="Пароль"
-          onChange={handlePasswordChange}
+          onChange={handleChange}
           extraClass="mb-6"
           required
         />

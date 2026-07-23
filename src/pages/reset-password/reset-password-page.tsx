@@ -3,7 +3,7 @@ import {
   Input,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@services/hooks';
@@ -11,7 +11,9 @@ import { resetPassword } from '@services/password/actions';
 import { getPasswordError, getPasswordLoading } from '@services/password/slice';
 import { isResetPasswordAllowed, removeResetPasswordAllowed } from '@utils/tokens';
 
-import type { ChangeEvent, FormEvent } from 'react';
+import { useForm } from '../../hooks/use-form';
+
+import type { FormEvent } from 'react';
 
 import styles from '../auth-form.module.css';
 
@@ -21,8 +23,10 @@ export const ResetPasswordPage = (): React.JSX.Element => {
   const isLoading = useAppSelector(getPasswordLoading);
   const error = useAppSelector(getPasswordError);
 
-  const [password, setPassword] = useState('');
-  const [token, setToken] = useState('');
+  const { values, handleChange } = useForm({
+    password: '',
+    token: '',
+  });
 
   useEffect(() => {
     if (!isResetPasswordAllowed()) {
@@ -30,18 +34,10 @@ export const ResetPasswordPage = (): React.JSX.Element => {
     }
   }, [navigate]);
 
-  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setPassword(event.target.value);
-  };
-
-  const handleTokenChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setToken(event.target.value);
-  };
-
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    void dispatch(resetPassword({ password, token }))
+    void dispatch(resetPassword(values))
       .unwrap()
       .then(() => {
         removeResetPasswordAllowed();
@@ -57,18 +53,18 @@ export const ResetPasswordPage = (): React.JSX.Element => {
 
         <PasswordInput
           name="password"
-          value={password}
+          value={values.password}
           placeholder="Введите новый пароль"
-          onChange={handlePasswordChange}
+          onChange={handleChange}
           extraClass="mb-6"
           required
         />
 
         <Input
           name="token"
-          value={token}
+          value={values.token}
           placeholder="Введите код из письма"
-          onChange={handleTokenChange}
+          onChange={handleChange}
           extraClass="mb-6"
           required
         />

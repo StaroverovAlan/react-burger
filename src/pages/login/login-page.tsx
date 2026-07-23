@@ -3,14 +3,15 @@ import {
   EmailInput,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { loginUser } from '@services/auth/actions';
 import { getAuthError, getAuthLoading } from '@services/auth/slice';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 
-import type { ChangeEvent, FormEvent } from 'react';
+import { useForm } from '../../hooks/use-form';
+
+import type { FormEvent } from 'react';
 
 import styles from '../auth-form.module.css';
 
@@ -19,21 +20,15 @@ export const LoginPage = (): React.JSX.Element => {
   const isLoading = useAppSelector(getAuthLoading);
   const error = useAppSelector(getAuthError);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setPassword(event.target.value);
-  };
+  const { values, handleChange } = useForm({
+    email: '',
+    password: '',
+  });
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    void dispatch(loginUser({ email, password }));
+    void dispatch(loginUser(values));
   };
 
   return (
@@ -43,18 +38,18 @@ export const LoginPage = (): React.JSX.Element => {
 
         <EmailInput
           name="email"
-          value={email}
+          value={values.email}
           placeholder="E-mail"
-          onChange={handleEmailChange}
+          onChange={handleChange}
           extraClass="mb-6"
           required
         />
 
         <PasswordInput
           name="password"
-          value={password}
+          value={values.password}
           placeholder="Пароль"
-          onChange={handlePasswordChange}
+          onChange={handleChange}
           extraClass="mb-6"
           required
         />
