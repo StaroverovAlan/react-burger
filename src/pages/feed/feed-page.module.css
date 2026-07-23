@@ -1,0 +1,5 @@
+.page {
+  width: 1240px;
+  margin: 120px auto 0;
+  color: var(--text-primary-color);
+}

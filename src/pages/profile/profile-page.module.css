@@ -1,0 +1,20 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 480px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  width: 100%;
+}
+
+.error {
+  align-self: center;
+  min-height: 24px;
+  color: #e52b1a;
+  text-align: center;
+}
