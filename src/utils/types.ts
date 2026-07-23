@@ -70,9 +70,9 @@ export type TRegisterRequest = TLoginRequest & {
 };
 
 export type TUpdateUserRequest = {
-  name: string;
-  email: string;
-  password: string;
+  name?: string;
+  email?: string;
+  password?: string;
 };
 
 export type TForgotPasswordRequest = {
