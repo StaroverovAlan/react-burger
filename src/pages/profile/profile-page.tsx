@@ -5,6 +5,7 @@ import { updateUser } from '@services/auth/actions';
 import { getAuthError, getAuthLoading, getUser } from '@services/auth/slice';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 
+import type { TUpdateUserRequest } from '@utils/types';
 import type { ChangeEvent, FormEvent } from 'react';
 
 import styles from './profile-page.module.css';
@@ -61,7 +62,29 @@ export const ProfilePage = (): React.JSX.Element => {
       return;
     }
 
-    void dispatch(updateUser(form));
+    const updateData: TUpdateUserRequest = {};
+
+    if (form.name !== initialForm.name) {
+      updateData.name = form.name;
+    }
+
+    if (form.email !== initialForm.email) {
+      updateData.email = form.email;
+    }
+
+    if (form.password) {
+      updateData.password = form.password;
+    }
+
+    void dispatch(updateUser(updateData))
+      .unwrap()
+      .then(() => {
+        setForm((currentForm) => ({
+          ...currentForm,
+          password: '',
+        }));
+      })
+      .catch(() => undefined);
   };
 
   return (
