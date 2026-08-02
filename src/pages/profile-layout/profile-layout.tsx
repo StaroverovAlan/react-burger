@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useRef } from 'react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { logoutUser } from '@services/auth/actions';
 import { getAuthLoading } from '@services/auth/slice';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
+import { profileOrdersDisconnect } from '@services/profile-orders/slice';
 
 import styles from './profile-layout.module.css';
 
@@ -14,7 +15,19 @@ const getLinkClassName = ({ isActive }: { isActive: boolean }): string => {
 export const ProfileLayout = (): React.JSX.Element => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const isLoading = useAppSelector(getAuthLoading);
+  const wasProfileOrdersPage = useRef(false);
+
+  useEffect(() => {
+    const isProfileOrdersPage = location.pathname.startsWith('/profile/orders');
+
+    if (wasProfileOrdersPage.current && !isProfileOrdersPage) {
+      dispatch(profileOrdersDisconnect());
+    }
+
+    wasProfileOrdersPage.current = isProfileOrdersPage;
+  }, [dispatch, location.pathname]);
 
   const handleLogout = useCallback((): void => {
     void dispatch(logoutUser())

@@ -24,6 +24,18 @@ export type TUser = {
   name: string;
 };
 
+export type TOrderStatus = 'created' | 'pending' | 'done';
+
+export type TOrder = {
+  ingredients: string[];
+  _id: string;
+  status: TOrderStatus;
+  number: number;
+  createdAt: string;
+  updatedAt: string;
+  name?: string;
+};
+
 export type TIngredientsResponse = {
   success: boolean;
   data: TIngredient[];
@@ -35,6 +47,23 @@ export type TOrderResponse = {
   order: {
     number: number;
   };
+};
+
+export type TOrdersResponse = {
+  success: boolean;
+  orders: TOrder[];
+  total: number;
+  totalToday: number;
+};
+
+export type TOrderByNumberResponse = {
+  success: boolean;
+  orders: TOrder[];
+};
+
+export type TWebSocketErrorResponse = {
+  success?: boolean;
+  message: string;
 };
 
 export type TAuthResponse = {

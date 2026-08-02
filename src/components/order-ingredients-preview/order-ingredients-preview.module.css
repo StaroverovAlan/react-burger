@@ -1,0 +1,42 @@
+.list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 64px;
+  height: 64px;
+  margin-left: -16px;
+  overflow: hidden;
+  background:
+    linear-gradient(#131316, #131316) padding-box,
+    linear-gradient(45deg, #801ab2, #4c4cff) border-box;
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+
+.item:first-child {
+  margin-left: 0;
+}
+
+.image {
+  width: 112px;
+  height: 56px;
+  object-fit: cover;
+}
+
+.counter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(28 28 33 / 60%);
+}
