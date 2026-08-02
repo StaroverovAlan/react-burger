@@ -1,5 +1,19 @@
 .page {
   width: 1240px;
-  margin: 120px auto 0;
+  margin: 40px auto 0;
   color: var(--text-primary-color);
+}
+
+.content {
+  display: flex;
+  gap: 60px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 600px;
+  max-height: calc(100vh - 188px);
+  overflow-y: auto;
 }
