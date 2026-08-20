@@ -13,6 +13,7 @@ import type {
   TForgotPasswordRequest,
   TIngredientsResponse,
   TLoginRequest,
+  TOrderByNumberResponse,
   TOrderResponse,
   TRefreshTokenResponse,
   TRegisterRequest,
@@ -74,7 +75,7 @@ const request = <T extends { success: boolean }>(
     .then(checkSuccess);
 };
 
-const refreshTokenApi = (): Promise<TRefreshTokenResponse> => {
+export const refreshTokenApi = (): Promise<TRefreshTokenResponse> => {
   return request<TRefreshTokenResponse>('/auth/token', {
     method: 'POST',
     headers: {
@@ -132,6 +133,19 @@ export const createOrderApi = (ingredients: string[]): Promise<TOrderResponse> =
     },
     body: JSON.stringify({ ingredients }),
   });
+};
+
+export const getOrderByNumberApi = (number: string): Promise<TOrderByNumberResponse> => {
+  return request<TOrderByNumberResponse>(`/orders/${number}`);
+};
+
+export const refreshAuthToken = async (): Promise<TRefreshTokenResponse> => {
+  const refreshData = await refreshTokenApi();
+
+  setAccessToken(refreshData.accessToken);
+  setRefreshToken(refreshData.refreshToken);
+
+  return refreshData;
 };
 
 export const registerApi = (data: TRegisterRequest): Promise<TAuthResponse> => {

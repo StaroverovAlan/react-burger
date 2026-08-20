@@ -1,0 +1,35 @@
+.status {
+  width: 580px;
+}
+
+.columns,
+.number_columns {
+  display: flex;
+  gap: 36px;
+}
+
+.columns > div {
+  width: 272px;
+}
+
+.number_columns {
+  align-items: flex-start;
+}
+
+.list {
+  min-width: 120px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.done {
+  color: #0cc;
+}
+
+.total {
+  text-shadow:
+    0 0 16px rgb(51 51 255 / 25%),
+    0 0 8px rgb(51 51 255 / 25%),
+    0 4px 32px rgb(51 51 255 / 50%);
+}

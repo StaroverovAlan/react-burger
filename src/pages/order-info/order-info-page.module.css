@@ -1,0 +1,7 @@
+.page {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 120px auto 0;
+  color: var(--text-primary-color);
+}

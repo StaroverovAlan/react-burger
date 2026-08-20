@@ -1,0 +1,38 @@
+.card {
+  display: block;
+  color: var(--text-primary-color);
+  text-decoration: none;
+  background-color: var(--background);
+  border-radius: 40px;
+}
+
+.header,
+.footer,
+.price {
+  display: flex;
+  align-items: center;
+}
+
+.header,
+.footer {
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.status {
+  color: var(--text-primary-color);
+}
+
+.status_done {
+  color: #0cc;
+}
+
+.price {
+  gap: 8px;
+}
