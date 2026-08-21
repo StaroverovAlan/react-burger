@@ -52,6 +52,7 @@ export const BurgerConstructor = ({
   return (
     <section
       ref={constructorRef}
+      data-testid="burger-constructor"
       className={`${styles.burger_constructor} ${isOver ? styles.constructor_hover : ''}`}
     >
       <div className={`${styles.locked_element} ml-8`}>

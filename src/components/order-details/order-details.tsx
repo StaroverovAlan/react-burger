@@ -9,7 +9,7 @@ export const OrderDetails = (): React.JSX.Element => {
   const orderNumber = useAppSelector(getOrderNumber);
 
   return (
-    <section className={styles.details}>
+    <section className={styles.details} data-testid="order-details">
       <p className={`${styles.order_number} text text_type_digits-large mt-4 mb-8`}>
         {orderNumber}
       </p>

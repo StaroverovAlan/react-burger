@@ -37,6 +37,7 @@ export const IngredientCard = ({
   return (
     <li
       ref={cardRef}
+      data-testid={`ingredient-card-${ingredient._id}`}
       className={styles.card}
       style={{ opacity: isDragging ? 0.5 : 1 }}
       onClick={() => onClick(ingredient)}

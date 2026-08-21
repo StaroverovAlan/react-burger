@@ -41,7 +41,12 @@ export const Modal = ({
     <>
       <ModalOverlay onClose={onClose} />
 
-      <section className={styles.modal}>
+      <section
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        data-testid="modal"
+      >
         <div className={styles.header}>
           {title && <h2 className="text text_type_main-large m-0">{title}</h2>}
 
